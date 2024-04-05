@@ -2,24 +2,29 @@
 using BRS.Entities;
 using BRS.Model;
 using BRS.Repository.Interface;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BRS.Repository
 {
     public class RoleRepository : IRoleRepository
     {
         private readonly BRSDbContext _context;
+        private readonly ILogger<RoleRepository> _logger;
         public RoleRepository(
-            BRSDbContext context
+            BRSDbContext context,
+            ILogger<RoleRepository> logger
             )
         {
             _context = context;        
-        
+            _logger = logger;
         }
 
         public async Task AddRoles(RolesDto rolesDto)
         {
-            
-
+            try
+            {
+    
             var roles = new Roles()
             {
                  RoleName= rolesDto.RoleName,
@@ -28,6 +33,13 @@ namespace BRS.Repository
             _context.Roles.Add(roles);
 
             await _context.SaveChangesAsync();  
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError($"Role Data Not Added{ex.Message}");
+                throw;
+            
+            }
             
         }
 

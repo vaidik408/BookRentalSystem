@@ -24,10 +24,10 @@ namespace BRS.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Roles>()
-                .HasOne(r => r.Users)
-                .WithOne(u => u.Roles)
-                .HasForeignKey<Users>(u => u.RoleId);
+            modelBuilder.Entity<Users>()
+            .HasOne(u => u.Roles)          
+            .WithMany(r => r.Users)        
+            .HasForeignKey(u => u.RoleId);
 
             modelBuilder.Entity<BookStatus>()
              .HasOne(r => r.Books)

@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualBasic;
+using BRS.Data;
 
 namespace BRS.Entities
 {
-    public class BookRental
+    public class BookRental : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid RentId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid UserId { get; set; } 
         public Users Users { get; set; }
         public Guid BookId { get; set; }
         public Books Books { get; set; }

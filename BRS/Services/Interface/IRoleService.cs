@@ -1,7 +1,9 @@
-﻿namespace BRS.Services.Interface
+﻿using BRS.Model;
+
+namespace BRS.Services.Interface
 {
     public interface IRoleService
     {
-        Task AddRoles();
+        Task AddRoles(RolesDto roleDto);
     }
 }

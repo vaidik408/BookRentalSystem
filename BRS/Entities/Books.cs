@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using BRS.Data;
 
 namespace BRS.Entities
 {
-    public class Books
+    public class Books : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,7 +13,6 @@ namespace BRS.Entities
         public BookStatus BookStatus { get; set; }
         public string Bk_Title { get; set; }
         public string Bk_Number { get; set; }
-        public string Bk_Name { get; set; }
         public string Bk_Description { get; set; }
         public string Bk_Author { get; set; }
 
