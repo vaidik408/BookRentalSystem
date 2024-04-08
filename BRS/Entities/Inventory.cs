@@ -9,8 +9,8 @@ namespace BRS.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid InventoryId { get; set; }
-        public int TotalBooks {  get; set; }
-        public int AvailableBooks { get; set; }
-        public int ReservedBooks { get; set; }
+        public int TotalBooks {  get; set; } = 0;
+        public int AvailableBooks { get; set; } = 0;
+        public int ReservedBooks { get; set; } = 0; 
     }
 }

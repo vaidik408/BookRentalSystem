@@ -40,12 +40,12 @@ namespace BRS.Repository
             await _context.SaveChangesAsync();
         }
 
-        public IQueryable<BookDto> GetAllBooks()
+        public IQueryable<BookStatusDto> GetAllBooks()
         {
             try
             {
                 var query = _context.Books
-                .Select(book => new BookDto
+                .Select(book => new BookStatusDto
                 {
                     BookId = book.BookId,
                     Bk_Title = book.Bk_Title,
@@ -64,7 +64,7 @@ namespace BRS.Repository
             }
         }
 
-        public IQueryable<BookDto> ApplySorting(IQueryable<BookDto> query, string sortBy, bool descending = false)
+        public IQueryable<BookStatusDto> ApplySorting(IQueryable<BookStatusDto> query, string sortBy, bool descending = false)
         {
             switch (sortBy.ToLower())
             { 

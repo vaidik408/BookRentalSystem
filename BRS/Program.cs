@@ -4,6 +4,7 @@ using BRS.Repository.Interface;
 using BRS.Services;
 using BRS.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Serilog;
 
 
@@ -36,8 +37,25 @@ builder.Services.AddScoped<IBookStatusRepository, BookStatusRepository> ();
 builder.Services.AddScoped<IBookRentalRepository, BookRentalRepository> ();
 builder.Services.AddScoped<IBookRentalService, BookRentalService>();
 
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository> ();
+
 builder.Services.AddScoped<EmailService>();
 
+builder.Services.AddScoped<RentalReminderJob>();
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();  
+
+    var jobKey = new JobKey ("RentalReminderJob");
+    q.AddJob<RentalReminderJob>(opts => opts.WithIdentity(jobKey));
+    q.AddTrigger(opts => opts
+               .ForJob(jobKey)
+               .WithIdentity("OverdueRentalReminderTrigger")
+                .WithCronSchedule("0 0 0 * * ? *")
+                );               
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 IConfigurationRoot configuration = new ConfigurationBuilder()
                    .SetBasePath(Directory.GetCurrentDirectory())

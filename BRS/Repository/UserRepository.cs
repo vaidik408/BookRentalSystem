@@ -82,5 +82,21 @@ namespace BRS.Repository
             }
 
         }
+
+        public async Task<string> GetCustomerEmailbyUserId(Guid UserId)
+        {
+            try
+            {
+                var AdminEmail = await _context.Users.FirstOrDefaultAsync(u => u.UserId == UserId && u.RoleId == 2);
+
+                return AdminEmail.UserEmail;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+
+        }
     }
 }

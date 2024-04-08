@@ -7,7 +7,7 @@ namespace BRS.Repository.Interface
     public interface IBookRepository
     {
         Task AddBooks(BookDto bookDto);
-        IQueryable<BookDto> GetAllBooks();
-        IQueryable<BookDto> ApplySorting(IQueryable<BookDto> query, string sortBy, bool descending = false);
+        IQueryable<BookStatusDto> GetAllBooks();
+        IQueryable<BookStatusDto> ApplySorting(IQueryable<BookStatusDto> query, string sortBy, bool descending = false);
     }
 }

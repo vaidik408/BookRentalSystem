@@ -8,16 +8,18 @@ namespace BRS.Services
 {
     public class BookService : IBookService
     {
-
+        private readonly IInventoryRepository _inventoryRepository;
         private readonly IBookRepository _bookRepository;
         private readonly ILogger<BookService> _logger;
 
         public BookService
             (
             IBookRepository bookRepository,
+            IInventoryRepository inventoryRepository,
             ILogger<BookService> logger
         )
         {
+            _inventoryRepository = inventoryRepository;
             _bookRepository = bookRepository;
             _logger = logger;
         }
@@ -26,23 +28,22 @@ namespace BRS.Services
             try
             {
                 await _bookRepository.AddBooks(bookDto);
+                await _inventoryRepository.UpdateInventory();
             }
             catch (Exception ex)
             {
-
-                _logger.LogError($"{ex.Message}");
-
+                _logger.LogError(ex.Message);
             }
         }
-        public IQueryable<BookDto> GetAllBooks()
+        public IQueryable<BookStatusDto> GetAllBooks()
         {
             try
             {
                 return _bookRepository.GetAllBooks();
             }
-            catch (Exception ex)
+            catch (Exception ex)    
             {
-                _logger.LogError($"{ex.Message}");
+                _logger.LogError(ex.Message);
                 throw;
             }
         }

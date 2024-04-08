@@ -47,48 +47,83 @@ namespace BRS.Repository
                 };
 
                 await _context.AddAsync( Rent );
-                await SendBookRentendNotification(Rent.UserId);
+                await SendBookRentendNotification(BookId);
+               
             }
         }
 
-        public async Task<string> SendBookRentendNotification(Guid UserId)
+        public async Task<string> SendBookRentendNotification(Guid BookId)
         {
-            try { 
+            try 
+            { 
            
             var bookRental = await _context.BookRental
             .Include(br => br.Books)
-            .FirstOrDefaultAsync(br => br.UserId == UserId);
+            .FirstOrDefaultAsync(br => br.BookId == BookId);
 
-            if (bookRental != null)
-            {
-                var rentDate = bookRental.RentDate.ToString("yyyy-MM-dd");
-                var returnDate = bookRental.ReturnDate.ToString("yyyy-MM-dd");
-                var bookTitle = bookRental.Books.Bk_Title;
-                var bookNumber = bookRental.Books.Bk_Number;
+                var UserId = bookRental.UserId;
 
-                var recipientEmail = await _userRepository.GetAdminEmailbyUserId(UserId);
-                var subject = "New Book Rented";
-                var body = $"A new book has been rented.\n\n" +
-                           $"Rent Date: {rentDate}\n" +
-                           $"Return Date: {returnDate}\n" +
-                           $"Book Title: {bookTitle}\n" +
-                           $"Book Number: {bookNumber}";
+                if (bookRental != null)
+                {
+                    var rentDate = bookRental.RentDate.ToString("yyyy-MM-dd");
+                    var returnDate = bookRental.ReturnDate.ToString("yyyy-MM-dd");
+                    var bookTitle = bookRental.Books.Bk_Title;
+                    var bookNumber = bookRental.Books.Bk_Number;
+                    var UserName = bookRental.Users.UserName;
 
-                    await _emailService.SendEmailAsync(recipientEmail, subject, body);
 
-                return "Email notification sent successfully.";
+                    var recipientEmail = await _userRepository.GetAdminEmailbyUserId(UserId);
+                    var subject = "New Book Rented";
+                    var body = $"A new book has been rented.\n\n" +
+                               $"Rent Date: {rentDate}\n" +
+                               $"Return Date: {returnDate}\n" +
+                               $"Book Title: {bookTitle}\n" +
+                               $"Book Number: {bookNumber}"+
+                               $"Customer Name:{UserName}";
+
+                        await _emailService.SendEmailAsync(recipientEmail, subject, body);
+
+                    return "Email notification sent successfully.";
+                }
+                else
+                {
+                    return "No book rental found for the user.";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "No book rental found for the user.";
+                _logger.LogError($"Error occurred while sending book rental notification email: {ex.Message}");
+                throw;
             }
         }
-    catch (Exception ex)
-    {
-        _logger.LogError($"Error occurred while sending book rental notification email: {ex.Message}");
-        throw;
-    }
-}
+        public async Task SendEmailNotificationForDueDate(Guid BookId)
+        {
+            var bookRental = await _context.BookRental.FirstOrDefaultAsync(b=>b.BookId == BookId);
+            var UserId = bookRental.UserId;
+
+            var rentDate = bookRental.RentDate.ToString("yyyy-MM-dd");
+            var returnDate = bookRental.ReturnDate.ToString("yyyy-MM-dd");
+            var bookTitle = bookRental.Books.Bk_Title;
+            var bookNumber = bookRental.Books.Bk_Number;
+
+            var recipientEmail = await _userRepository.GetAdminEmailbyUserId(UserId);
+            var subject = "Book Return Due Date";
+            var body = $"Today is Last to return book.\n\n" +
+                       $"Book Title: {bookTitle}\n" +
+                       $"Book Number: {bookNumber}" +
+                       $"Rent Date: {rentDate}\n" +
+                       $"Return Date: {returnDate}\n";
+    
+            await _emailService.SendEmailAsync(recipientEmail, subject, body);
+            
+        }
+
+        public async Task<List<BookRental>> GetOverdueRentalsAsync()
+        {
+            return await _context.BookRental
+                .Where(b => b.ReturnDate == DateOnly.FromDateTime(DateTime.Today) || b.ReturnDate < DateOnly.FromDateTime(DateTime.Today)) 
+                .ToListAsync();
+        }
 
     }
 }

@@ -49,6 +49,17 @@ namespace BRS.Data
                 .WithMany(u => u.RentHistory)
                 .HasForeignKey(u => u.RentId);
 
+            modelBuilder.Entity<Inventory>()
+                .HasData(
+                    new Inventory
+                    {
+                        InventoryId = Guid.NewGuid(),
+                        TotalBooks = 0,
+                        ReservedBooks = 0,
+                        AvailableBooks = 0
+                    }
+                );
+
         }
 
 
