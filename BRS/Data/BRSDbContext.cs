@@ -32,7 +32,7 @@ namespace BRS.Data
             modelBuilder.Entity<BookStatus>()
              .HasOne(r => r.Books)
              .WithOne(u => u.BookStatus)
-             .HasForeignKey<Books>(u => u.StatusId);
+             .HasForeignKey<BookStatus>(u => u.BookId);
 
             modelBuilder.Entity<BookRental>()
              .HasOne(r => r.Books)
@@ -41,8 +41,8 @@ namespace BRS.Data
 
             modelBuilder.Entity<BookRental>()
                 .HasOne(r => r.Users)
-                .WithOne(u => u.BookRental)
-                .HasForeignKey<BookRental>(u => u.UserId);
+                .WithMany(u => u.BookRentals)
+                .HasForeignKey(u => u.UserId);
 
             modelBuilder.Entity<RentHistory>()
                 .HasOne(r => r.BookRental)

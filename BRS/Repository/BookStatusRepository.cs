@@ -20,16 +20,15 @@ namespace BRS.Repository
         }
 
 
-        public async Task AddBookStatus(BookStatusDto bookStatusDto)
+        public async Task AddBookStatus(Books book)
         {
             var status = new BookStatus()
             {
-                BookId = bookStatusDto.BookId,
-                Bk_Status = bookStatusDto.Bk_Status,
-
+                StatusId = Guid.NewGuid(),
+                BookId = book.BookId,
+                Bk_Status = Enum.BookStatusEnum.Available
             };
-            await _context.BookStatus.AddAsync(status );
-            await _context.SaveChangesAsync(); 
+            await _context.BookStatus.AddAsync(status);
         }
 
         public async Task<bool> UpdateBookStatus(Guid BookId)

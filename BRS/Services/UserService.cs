@@ -47,20 +47,7 @@ namespace BRS.Services
             }
         }
 
-        public IQueryable<Users> ApplySorting(IQueryable<Users> query, string sortBy)
-        {
-            switch (sortBy.ToLower())
-            {
-                case "createdAt":
-                    return query.OrderBy(u => u.CreatedAt);
-                case "UserName":
-                    return query.OrderBy(u => u.UserName);
-                case "UserId":
-                default:
-                    return query.OrderBy(u => u.UserId);
-
-            }
-        }
+       
 
     }
 }

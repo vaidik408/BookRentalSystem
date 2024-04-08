@@ -52,5 +52,35 @@ namespace BRS.Repository
                 throw;
             }
         }
+        public IQueryable<Users> ApplySorting(IQueryable<Users> query, string sortBy)
+        {
+            switch (sortBy.ToLower())
+            {
+                case "createdAt":
+                    return query.OrderBy(u => u.CreatedAt);
+                case "UserName":
+                    return query.OrderBy(u => u.UserName);
+                case "UserId":
+                default:
+                    return query.OrderBy(u => u.UserId);
+
+            }
+        }
+
+        public async Task<string> GetAdminEmailbyUserId(Guid UserId)
+        {
+            try
+            {
+            var AdminEmail = await _context.Users.FirstOrDefaultAsync(u => u.UserId == UserId && u.RoleId == 1);
+
+            return AdminEmail.UserEmail;
+            }
+            catch(Exception ex)
+            { 
+                _logger.LogError(ex.Message);
+                throw;
+            }
+
+        }
     }
 }

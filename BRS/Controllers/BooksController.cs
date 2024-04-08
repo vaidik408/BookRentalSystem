@@ -1,37 +1,34 @@
 ﻿using BRS.Model;
 using BRS.Repository.Interface;
-using BRS.Services;
 using BRS.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BRS.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : Controller
+    public class BooksController : Controller
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
-        private readonly ILogger<UsersController> _logger;
-        public UsersController(
-                IUserService userService,
-                IUserRepository userRepository,
-                ILogger<UsersController> logger
+        private readonly IBookService _bookService;
+        private readonly IBookRepository _bookRepository;
+        private readonly ILogger<BooksController> _logger;
+        public BooksController(
+               IBookService bookService,
+               IBookRepository bookRepository,
+                ILogger<BooksController> logger
             )
         {
             _logger = logger;
-            _userService = userService;
-            _userRepository = userRepository;
+           _bookRepository = bookRepository;
+            _bookService = bookService;
         }
 
-        [HttpPost("AddUsers")]
-        public async Task<IActionResult> AddRoles(UserDto userDto)
+        [HttpPost("AddBooks")]
+        public async Task<IActionResult> AddBooks(BookDto bookDto)
         {
             try
             {
-                await _userService.AddUser(userDto);
+                await _bookService.AddBook(bookDto);
                 return Ok();
             }
             catch (Exception ex)
@@ -44,20 +41,20 @@ namespace BRS.Controllers
 
 
         [HttpGet]
-        [Route("GetUsers")]
-        public IActionResult GetUsers(int page = 1, int pageSize = 10, string sortBy = "UserId", string search = "")
+        [Route("GetBooks")]
+        public IActionResult GetBooks(int page = 1, int pageSize = 10, string sortBy = "bookid", string search = "", bool descending = false)
         {
             try
             {
-                var query = _userService.GetAllUsers();
+                var query = _bookService.GetAllBooks();
 
                 if (!string.IsNullOrEmpty(search))
                 {
-                    query = query.Where(c => c.UserName.Contains(search));
+                    query = query.Where(c => c.Bk_Title.Contains(search));
                 }
 
-                query = _userRepository.ApplySorting(query, sortBy);
-             
+                query = _bookRepository.ApplySorting(query, sortBy,descending);
+
                 var totalItems = query.Count();
                 var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -69,9 +66,9 @@ namespace BRS.Controllers
                     TotalPages = totalPages,
                     Page = page,
                     PageSize = pageSize,
-                    UserName = query.ToList()
+                    Books = query.ToList()
                 };
-                
+
                 return Ok(result);
             }
             catch (Exception ex)

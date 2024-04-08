@@ -12,6 +12,6 @@ namespace BRS.Entities
         public Guid StatusId { get; set; }
         public Guid BookId { get; set; }
         public Books Books { get; set; }
-        public BookStatusEnum Bk_Status { get; set; } = BookStatusEnum.Available;
+        public BookStatusEnum Bk_Status { get; set; } 
     }
 }

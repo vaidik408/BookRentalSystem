@@ -13,12 +13,14 @@ namespace BRS.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "BookStatus",
+                name: "Books",
                 columns: table => new
                 {
-                    StatusId = table.Column<Guid>(type: "uuid", nullable: false),
                     BookId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Bk_Status = table.Column<int>(type: "integer", nullable: false),
+                    Bk_Title = table.Column<string>(type: "text", nullable: false),
+                    Bk_Number = table.Column<string>(type: "text", nullable: false),
+                    Bk_Description = table.Column<string>(type: "text", nullable: false),
+                    Bk_Author = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
@@ -29,7 +31,7 @@ namespace BRS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookStatus", x => x.StatusId);
+                    table.PrimaryKey("PK_Books", x => x.BookId);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,16 +76,12 @@ namespace BRS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Books",
+                name: "BookStatus",
                 columns: table => new
                 {
-                    BookId = table.Column<Guid>(type: "uuid", nullable: false),
                     StatusId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Bk_Title = table.Column<string>(type: "text", nullable: false),
-                    Bk_Number = table.Column<string>(type: "text", nullable: false),
-                    Bk_Name = table.Column<string>(type: "text", nullable: false),
-                    Bk_Description = table.Column<string>(type: "text", nullable: false),
-                    Bk_Author = table.Column<string>(type: "text", nullable: false),
+                    BookId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Bk_Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
@@ -94,12 +92,12 @@ namespace BRS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Books", x => x.BookId);
+                    table.PrimaryKey("PK_BookStatus", x => x.StatusId);
                     table.ForeignKey(
-                        name: "FK_Books_BookStatus_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "BookStatus",
-                        principalColumn: "StatusId",
+                        name: "FK_BookStatus_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "BookId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -203,9 +201,9 @@ namespace BRS.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_StatusId",
-                table: "Books",
-                column: "StatusId",
+                name: "IX_BookStatus_BookId",
+                table: "BookStatus",
+                column: "BookId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -223,6 +221,9 @@ namespace BRS.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookStatus");
+
+            migrationBuilder.DropTable(
                 name: "Inventory");
 
             migrationBuilder.DropTable(
@@ -236,9 +237,6 @@ namespace BRS.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "BookStatus");
 
             migrationBuilder.DropTable(
                 name: "Roles");

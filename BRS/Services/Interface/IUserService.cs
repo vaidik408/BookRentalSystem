@@ -7,6 +7,6 @@ namespace BRS.Services.Interface
     {
         Task AddUser(UserDto userDto);
         IQueryable<Users> GetAllUsers();
-        IQueryable<Users> ApplySorting(IQueryable<Users> query, string sortBy);
+      
     }
 }

@@ -15,6 +15,6 @@ namespace BRS.Entities
         public string Password { get; set; }
         public string UserEmail { get; set; }   
         public string ContactNumber { get; set; }
-        public BookRental BookRental { get; set; }
+        public ICollection<BookRental> BookRentals { get; set; } = new List<BookRental>();
     }
 }

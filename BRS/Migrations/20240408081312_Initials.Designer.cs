@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BRS.Migrations
 {
     [DbContext(typeof(BRSDbContext))]
-    [Migration("20240405112428_removecolumn")]
-    partial class removecolumn
+    [Migration("20240408081312_Initials")]
+    partial class Initials
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,9 @@ namespace BRS.Migrations
 
                     b.HasKey("StatusId");
 
+                    b.HasIndex("BookId")
+                        .IsUnique();
+
                     b.ToTable("BookStatus");
                 });
 
@@ -123,10 +126,6 @@ namespace BRS.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Bk_Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Bk_Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -153,9 +152,6 @@ namespace BRS.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("StatusId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -163,9 +159,6 @@ namespace BRS.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("BookId");
-
-                    b.HasIndex("StatusId")
-                        .IsUnique();
 
                     b.ToTable("Books");
                 });
@@ -358,15 +351,15 @@ namespace BRS.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("BRS.Entities.Books", b =>
+            modelBuilder.Entity("BRS.Entities.BookStatus", b =>
                 {
-                    b.HasOne("BRS.Entities.BookStatus", "BookStatus")
-                        .WithOne("Books")
-                        .HasForeignKey("BRS.Entities.Books", "StatusId")
+                    b.HasOne("BRS.Entities.Books", "Books")
+                        .WithOne("BookStatus")
+                        .HasForeignKey("BRS.Entities.BookStatus", "BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BookStatus");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BRS.Entities.RentHistory", b =>
@@ -396,15 +389,12 @@ namespace BRS.Migrations
                     b.Navigation("RentHistory");
                 });
 
-            modelBuilder.Entity("BRS.Entities.BookStatus", b =>
-                {
-                    b.Navigation("Books")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BRS.Entities.Books", b =>
                 {
                     b.Navigation("BookRental");
+
+                    b.Navigation("BookStatus")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BRS.Entities.Roles", b =>

@@ -1,10 +1,12 @@
-﻿using BRS.Model;
+﻿using BRS.Entities;
+using BRS.Model;
 
 namespace BRS.Repository.Interface
 {
     public interface IBookStatusRepository
     {
-        Task AddBookStatus(BookStatusDto bookStatusDto);
+        Task AddBookStatus(Books book);
         Task<bool> UpdateBookStatus(Guid BookId);
+
     }
 }
