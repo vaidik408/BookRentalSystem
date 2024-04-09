@@ -1,8 +1,8 @@
 ﻿using BRS.Data;
 using BRS.Entities;
-using BRS.Model;
 using BRS.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BRS.Repository
 {
@@ -10,6 +10,7 @@ namespace BRS.Repository
     {
         private readonly BRSDbContext _context;
         private readonly ILogger<BookStatusRepository> _logger;
+
         public BookStatusRepository(
             BRSDbContext context,
             ILogger<BookStatusRepository> logger
@@ -19,18 +20,30 @@ namespace BRS.Repository
             _logger = logger;
         }
 
-
         public async Task AddBookStatus(Books book)
         {
-            var status = new BookStatus()
+            try
             {
-                StatusId = Guid.NewGuid(),
-                BookId = book.BookId,
-                Bk_Status = Enum.BookStatusEnum.Available
-            };
-            await _context.BookStatus.AddAsync(status);
-        }
+                if (book == null)
+                {
+                    throw new ArgumentNullException(nameof(book), "Book data cannot be null.");
+                }
 
+                var status = new BookStatus()
+                {
+                    StatusId = Guid.NewGuid(),
+                    BookId = book.BookId,
+                    Bk_Status = Enum.BookStatusEnum.Available
+                };
+
+                await _context.BookStatus.AddAsync(status);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while adding book status.");
+                throw;
+            }
+        }
         public async Task<bool> UpdateBookStatus(Guid BookId)
         {
             try
@@ -40,14 +53,14 @@ namespace BRS.Repository
                 if (userStatus != null)
                 {
                     userStatus.Bk_Status = Enum.BookStatusEnum.Reserved;
-
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error Occur While Updating Status{ex.Message}");
+                _logger.LogError(ex, "Error occurred while updating book status.");
                 throw;
             }
         }

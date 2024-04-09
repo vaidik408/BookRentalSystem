@@ -1,10 +1,12 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 namespace BRS.Services
 {
-
     public class EmailService
     {
         private readonly string _smtpServer;
@@ -45,13 +47,12 @@ namespace BRS.Services
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }
-            return true;
+                return true;
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                throw ex;
             }
         }
     }
-
 }

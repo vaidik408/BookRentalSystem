@@ -7,6 +7,7 @@ namespace BRS.Services.Interface
     {
         Task AddBook(BookDto bookDto);
         IQueryable<BookStatusDto> GetAllBooks();
+        Task<bool> DeleteBook(Guid bookId);
 
     }
 }

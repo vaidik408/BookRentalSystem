@@ -14,8 +14,8 @@ namespace BRS.Entities
         public Users Users { get; set; }
         public Guid BookId { get; set; }
         public Books Books { get; set; }
-        public DateOnly RentDate { get; set; }
-        public DateOnly ReturnDate { get; set; }
+        public DateTime RentDate { get; set; }
+        public DateTime ReturnDate { get; set; }
         public List<RentHistory> RentHistory { get; set; } = new List<RentHistory>(); 
     }
 }

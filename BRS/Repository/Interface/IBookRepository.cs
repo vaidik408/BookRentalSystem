@@ -9,5 +9,6 @@ namespace BRS.Repository.Interface
         Task AddBooks(BookDto bookDto);
         IQueryable<BookStatusDto> GetAllBooks();
         IQueryable<BookStatusDto> ApplySorting(IQueryable<BookStatusDto> query, string sortBy, bool descending = false);
+        Task<bool> DeleteBook(Guid bookId);
     }
 }

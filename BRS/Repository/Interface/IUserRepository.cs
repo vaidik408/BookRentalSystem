@@ -8,7 +8,8 @@ namespace BRS.Repository.Interface
         Task AddUser(UserDto userDto);
         IQueryable<Users> GetAllUsers();
         IQueryable<Users> ApplySorting(IQueryable<Users> query, string sortBy);
-        Task<string> GetAdminEmailbyUserId(Guid UserId);
+        Task<string> GetAdminEmailbyUserId();
         Task<string> GetCustomerEmailbyUserId(Guid UserId);
+        Task<UserDto> Authenticate(UserLoginDto userLogin);
     }
 }

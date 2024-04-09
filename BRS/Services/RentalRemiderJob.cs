@@ -6,12 +6,9 @@ namespace BRS.Services
     public class RentalReminderJob : IJob   
     {
         private readonly IBookRentalRepository _bookRentalRepository;
-        private readonly IInventoryRepository _inventoryRepository;
-
-        public RentalReminderJob(IBookRentalRepository bookRentalRepository,IInventoryRepository inventoryRepository)
+        public RentalReminderJob(IBookRentalRepository bookRentalRepository)
         {
             _bookRentalRepository = bookRentalRepository;
-            _inventoryRepository = inventoryRepository;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -21,7 +18,7 @@ namespace BRS.Services
             foreach (var rental in overdueRentals)
             {
                 await _bookRentalRepository.SendEmailNotificationForDueDate(rental.BookId);
-                await _inventoryRepository.UpdateAvailableBook();
+                
             }
         }
     }
